@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import * as t from 'babel-types'
 import {
   getClassDeclaration,
   getEntryIdentifier,
@@ -43,24 +44,32 @@ const getTypeAliasIdentifier = path => {
 const propVisitor = {
   TypeAlias(path, state) {
     const identifier = getTypeAliasIdentifier(path)
-    if (identifier) {
-      state.addProps(identifier, getFlowTypeKeys(path))
-    }
+    if (!state.hasEntry(identifier)) return
+
+    state.addProps(identifier, getFlowTypeKeys(path))
   },
   AssignmentExpression(path, state) {
+
     const identifier = getExpressionIdentifier(path)
     const right = _.get(path, 'node.right')
 
     if (!state.hasEntry(identifier)) return
+
     if (isValidExpression(path, ['handledProps']) && isArrayValue(right)) {
       state.addProps(identifier, getArrayItems(right))
       path.remove()
-
       return
     }
 
-    if (isValidExpression(path, ['defaultProps', 'propTypes']) && isObjectValue(right)) {
-      state.addProps(identifier, getObjectKeys(right))
+    if (isValidExpression(path, ['defaultProps', 'propTypes'])) {
+      if (isObjectValue(right)) {
+        state.addProps(identifier, getObjectKeys(right))
+      } else if (t.isIdentifier(right)) {
+        const name = _.get(right, 'name')
+        const properties = _.get(path, `scope.bindings.${name}.path.node.init.properties`) || []
+        const keys = properties.map(item => _.get(item, 'key.name'))
+        state.addProps(identifier, keys)
+      }
     }
   },
   ClassProperty(path, state) {

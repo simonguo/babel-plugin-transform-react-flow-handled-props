@@ -17,6 +17,7 @@ const fixtureAssert = (fixtureDir, options = []) =>
       babelrc: false,
       plugins: [[handledProps, options]],
     }).code
+
     const expected = fs.readFileSync(expectedPath).toString()
 
     assert.equal(_.trim(actual), _.trim(expected))
@@ -46,4 +47,5 @@ describe('fixtures', () => {
   fixtureAssert('stateless-assignment')
   fixtureAssert('stateless-predefined')
   fixtureAssert('flow')
+  fixtureAssert('preset-props')
 })
