@@ -24,6 +24,7 @@ const fixtureAssert = (fixtureDir, options = []) =>
   })
 
 describe('fixtures', () => {
+
   fixtureAssert('hoc')
   fixtureAssert('hoc-unnamed')
 
@@ -46,6 +47,10 @@ describe('fixtures', () => {
   fixtureAssert('stateless-arrow')
   fixtureAssert('stateless-assignment')
   fixtureAssert('stateless-predefined')
-  fixtureAssert('flow')
   fixtureAssert('preset-props')
+
+  fixtureAssert('flow')
+  fixtureAssert('flow-export')
+  fixtureAssert('flow-multiple')
+  fixtureAssert('flow-diff')
 })

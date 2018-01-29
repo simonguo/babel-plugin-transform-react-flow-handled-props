@@ -178,6 +178,7 @@ class Baz extends React.Component<Props> {
 export default Baz;
 ```
 
+> note: `flow type` must be named `Props`
 
 ## Usage
 
